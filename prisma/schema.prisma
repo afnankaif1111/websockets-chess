@@ -1,0 +1,67 @@
+// Chess App - Prisma Schema
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  gamesAsWhite Game[] @relation("WhitePlayer")
+  gamesAsBlack Game[] @relation("BlackPlayer")
+
+  @@map("users")
+}
+
+model Game {
+  id            String     @id @default(cuid())
+  whitePlayerId String
+  blackPlayerId String?
+  status        GameStatus @default(WAITING)
+  fen           String     @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  winner        String?    // 'white' | 'black' | 'draw'
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Relations
+  whitePlayer User   @relation("WhitePlayer", fields: [whitePlayerId], references: [id])
+  blackPlayer User?  @relation("BlackPlayer", fields: [blackPlayerId], references: [id])
+  moves       Move[]
+
+  @@map("games")
+}
+
+model Move {
+  id         String   @id @default(cuid())
+  gameId     String
+  playerId   String
+  move       String   // e.g. "e2e4" or SAN "e4"
+  fen        String   // board state after this move
+  moveNumber Int
+  createdAt  DateTime @default(now())
+
+  // Relations
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@map("moves")
+}
+
+enum GameStatus {
+  WAITING
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
