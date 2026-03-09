@@ -12,10 +12,10 @@
     "docker:down": "docker-compose down",
     "db:up": "docker-compose up -d postgres",
     "db:down": "docker-compose stop postgres",
-    "prisma:generate": "cd backend && npx prisma generate --schema=../prisma/schema.prisma",
-    "prisma:migrate": "cd backend && npx prisma migrate dev --schema=../prisma/schema.prisma",
-    "prisma:push": "cd backend && npx prisma db push --schema=../prisma/schema.prisma",
-    "prisma:studio": "cd backend && npx prisma studio --schema=../prisma/schema.prisma"
+    "prisma:generate": "cd backend && npx prisma generate --schema=./prisma/schema.prisma",
+    "prisma:migrate": "cd backend && npx prisma migrate dev --schema=./prisma/schema.prisma",
+    "prisma:push": "cd backend && npx prisma db push --schema=./prisma/schema.prisma",
+    "prisma:studio": "cd backend && npx prisma studio --schema=./prisma/schema.prisma"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
